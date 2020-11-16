@@ -1,4 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 li { list-style-type: none; }
+
 .form-wrapper {
     margin: 50px auto 50px;
     font-family: 'Lora', serif;
@@ -23,4 +29,33 @@ li { list-style-type: none; }
     border-radius: 5px;
     padding: 10px;
     border: 1px solid #80CED7;
+}
+
+.comment2 {
+    min-width: 400px;
+    border: 1px solid #1e5ee9;
+    border-radius: 5px;
+}
+
+.comment3 {
+    min-width: 150px;
+    border: 1px solid #1e5ee9;
+    border-radius: 5px;
+}
+
+.commentOwner{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+.comment2:hover {
+    background-color: rgba(224,255,255, 0.8);
+}
+
+.friendContainerRight {
+    padding-right: 2%;
+}
+
+.friendContainerLeft {
+    padding-left: 2%;
 }

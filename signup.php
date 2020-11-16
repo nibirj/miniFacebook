@@ -1,8 +1,37 @@
 <?php
 include 'controllers/authController.php';
-if(isset($_SESSION['email'])){
-    header('Location: index.php');
+if (isset($_POST['signup-btn'])) {
+    $errors = [];
+    $email = $_POST['email'];
+    $username = $_POST['username'];
+    if (empty($_POST['username'])) {
+        $errors['username'] = 'Username required';
+    }
+    if (empty($_POST['email'])) {
+        $errors['email'] = 'Email required';
+    }
+    if (empty($_POST['password'])) {
+        $errors['password'] = 'Password required';
+    }
+    if (isset($_POST['password']) && $_POST['password'] !== $_POST['passwordConf']) {
+        $errors['passwordConf'] = 'The two passwords do not match';
+    }
+    $sql = "SELECT * FROM users WHERE email='$email' LIMIT 1";
+    $result = mysqli_query($GLOBALS['conn'], $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $errors['email'] = "Email already exists";
+    }
+    // Check if username already exists
+    $sql2 = "SELECT * FROM users WHERE username='$username' LIMIT 1";
+    $result2 = mysqli_query($GLOBALS['conn'], $sql2);
+    if (mysqli_num_rows($result2) > 0) {
+        $errors['username'] = "Username already exists";
+    }
+    if(count($errors) === 0){
+        singUpUser($_POST['username'],$_POST['email'],$_POST['password']);
+    }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +56,7 @@ if(isset($_SESSION['email'])){
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" name="email" class="form-control form-control-lg" value="<?php echo $email; ?>">
+                    <input type="email" name="email" class="form-control form-control-lg" value="<?php echo $email; ?>">
                 </div>
                 <div class="form-group">
                     <label>Password</label>

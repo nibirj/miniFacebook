@@ -1,10 +1,22 @@
-<?php include 'controllers/authController.php';
-require 'controllers/init.php';
+<?php
+include 'controllers/authController.php';
+if (isset($_POST['login-btn'])) {
+    $errors = [];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    if (empty($_POST['username'])) {
+        $errors['username'] = 'Username or email required';
+    }
+    if (empty($_POST['password'])) {
+        $errors['password'] = 'Password required';
+    }
+    if (count($errors) === 0) {
+        loginUser($username, $password);
+    }
+}
 if(isset($_SESSION['email'])){
     header('Location: index.php');
-    exit;
 }?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +35,7 @@ if(isset($_SESSION['email'])){
             <h3 class="text-center form-title">Login</h3>
             <form action="login.php" method="post">
                 <div class="form-group">
-                    <label>Username or Email</label>
+                    <label>Email</label>
                     <input type="text" name="username" class="form-control form-control-lg" value="<?php echo $username; ?>">
                 </div>
                 <div class="form-group">

@@ -1,7 +1,15 @@
 <?php
 include 'controllers/authController.php';
 // redirect user to login page if they're not logged in
+if(isset($_POST["addComment"])) {
+    $_SESSION["postID"] = $_POST["addComment"];
+    $postId = $_POST["addComment"];
+} else {
+    $postId = $_SESSION["postID"];
+}
+
 if(isset($_SESSION['id']) && isset($_SESSION['email'])) {
+    $post = find_post($postId);
     $user_data = find_user_by_id($_SESSION['id']);
     if($user_data ===  false){
         header('Location: logout.php');
@@ -33,28 +41,33 @@ if (empty($_SESSION['id'])) {
     </nav>
     <a class="btn btn-outline-primary" href="logout.php">Logout</a>
 </div>
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 offset-md-4 home-wrapper">
-            <!-- Display messages -->
-            <h2>Welcome, <?php echo $user_data['username']; ?></h2>
-            <h4>Email: <?php echo $user_data['email']; ?></h4>
-            <h4>Location: <?php echo $user_data['location']; ?></h4>
-            <h4>Description: <?php echo $user_data['description']; ?></h4>
-        </div>
-    </div>
-</div>
+<h1 class="text-center">Post: "<?php echo $post["post"]?>"</h1>
 <div class="text-center">
-    <form  name="test" method="post" action="controllers/changeProf.php">
-        <p>Description<Br>
-            <textarea name="description" cols="40" rows="3"></textarea></p>
-        <p><input type="submit" value="submit">
-            <input type="reset" value="reset"></p>
-        <p>Location<Br>
-            <textarea name="location" cols="20" rows="1"></textarea></p>
-        <p><input type="submit" value="submit">
-            <input type="reset" value="reset"></p>
+    <form name="test" method="post" action="controllers/addComment.php">
+        <p>Add comment<Br>
+            <textarea name="comment" cols="40" rows="3"></textarea></p>
+        <p><button name="addPostCom" value="<?php echo $postId?>">Add comment</button></p>
+        <p><input type="reset" value="reset"></p>
     </form>
+</div>
+<div class="text-center commentOwner">
+        <?php
+        $conn = new mysqli('localhost', 'root', '', 'prax3');
+        $stmt = $conn->query("SELECT * FROM comments ORDER BY created_at DESC LIMIT 25");
+        if ($stmt -> num_rows > 0) {
+            while ($row = $stmt->fetch_assoc()) {
+                if ($row["post_id"] ==  $postId) {
+                    $user = find_user_by_id($row["user_id"]);  ?>
+    <ul class="comment2">
+                    <li>Name: <?php echo $user["username"]?></li>
+                    <li class="user_box"><span>Says: <?php echo $row["content"] ?></li>
+                    <li> <?php echo $row["updated_at"]?></li>
+    </ul>
+                    <?php
+                }
+            }
+        }
+        ?>
 </div>
 </body>
 </html>
