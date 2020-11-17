@@ -35,26 +35,60 @@ if (empty($_SESSION['id'])) {
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-4 offset-md-4 home-wrapper">
+        <div class="col-md-8 col-lg-6 B home-wrapper rowfix">
             <!-- Display messages -->
+            <div class="text-center">
+                <img src="assets/prof.jpg" width="175" height="150">
+            </div>
             <h2>Welcome, <?php echo $user_data['username']; ?></h2>
             <h4>Email: <?php echo $user_data['email']; ?></h4>
             <h4>Location: <?php echo $user_data['location']; ?></h4>
-            <h4>Description: <?php echo $user_data['description']; ?></h4>
+            <div class="text-center">
+                <p>Location<Br>
+                <form name="test" method="post" action="controllers/changeProf.php">
+                        <textarea class="description" name="location" cols="20" rows="1"></textarea></p>
+                    <p><input type="submit" value="submit">
+                        <input type="reset" value="reset"></p>
+                </form>
+            </div>
+            <h4 style="word-wrap: break-word;">Description: <?php echo $user_data['description']; ?></h4>
+            <div class="text-center">
+                <form  name="test" method="post" action="controllers/changeProf.php">
+                    <p>Description<Br>
+                        <textarea maxlength = "200" class="description" name="description" cols="40" rows="3"></textarea></p>
+                    <p><input type="submit" value="submit">
+                        <input type="reset" value="reset"></p>
+                </form>
+            </div>
+        </div>
+        <div id="results-container" class="col-md-4 col-lg-3 G">
+            <h2>My posts:</h2>
+            <?php
+            $conn = new mysqli('localhost', 'root', '', 'prax3');
+            $stmt = $conn->query("SELECT * FROM posts ORDER BY created_at DESC");
+            if ($stmt -> num_rows > 0) {
+                while ($row = $stmt->fetch_assoc()) {
+                    if ($row["userPost"] == $_SESSION["id"]) {
+                        $human = find_user_by_id($row["userPost"]);
+                        $post_id = $row["id"];
+                        $query = "SELECT COUNT(*) FROM reactions WHERE post_id ='$post_id'";
+                        $size_result = $conn->query($query)->fetch_array(); ?>
+                        <ul class="comment2">
+                            <li>Author: <?php echo $human["username"]?></li>
+                            <li><?php echo $row["post"]?></li>
+                            <li class="user_box"><form action="comment.php" method="post"><button name="addComment" value="<?php echo $row["id"] ?>">View comments</button></form></li>
+                            <li><form action="controllers/likePost.php" method="post"><a>Likes: <?php echo $size_result[0]?></form></li>
+                            <li>Date: <?php echo $row["created_at"]?></li>
+                        </ul>
+                    <?php }
+                }
+            } else { ?>
+                <h2>No posts have been made by you or your friends.</h2>
+                <?php
+            }
+            ?>
         </div>
     </div>
-</div>
-<div class="text-center">
-    <form  name="test" method="post" action="controllers/changeProf.php">
-        <p>Description<Br>
-            <textarea name="description" cols="40" rows="3"></textarea></p>
-        <p><input type="submit" value="submit">
-            <input type="reset" value="reset"></p>
-        <p>Location<Br>
-            <textarea name="location" cols="20" rows="1"></textarea></p>
-        <p><input type="submit" value="submit">
-            <input type="reset" value="reset"></p>
-    </form>
 </div>
 </body>
 </html>

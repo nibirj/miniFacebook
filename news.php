@@ -69,6 +69,7 @@ if (empty($_SESSION['id'])) {
                     <li><?php echo $row["post"]?></li>
                     <li class="user_box"><form action="comment.php" method="post"><button name="addComment" value="<?php echo $row["id"] ?>">View comments</button></form></li>
                     <li><form action="controllers/likePost.php" method="post"><a>Likes: <?php echo $size_result[0]?> </a><button name="likePost" value="<?php echo $row["id"]?>">Like</button></form></li>
+                    <li>Date: <?php echo $row["created_at"]?></li>
                 </ul>
             <?php }
         }

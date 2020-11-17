@@ -59,3 +59,11 @@ li { list-style-type: none; }
 .friendContainerLeft {
     padding-left: 2%;
 }
+
+.description{
+    resize: none;
+}
+.rowfix {
+    height: auto;
+    max-height: 720px;
+}
